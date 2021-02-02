@@ -1,3 +1,4 @@
+const util = require("util");
 const mysql = require("mysql");
 
 // Database Connection for Production
@@ -6,6 +7,7 @@ const mysql = require("mysql");
 //     user: process.env.SQL_USER,
 //     database: process.env.SQL_DATABASE,
 //     password: process.env.SQL_PASSWORD,
+//     multipleStatements: true,
 // }
 
 // if (process.env.CLOUD_SQL_CONNECTION_NAME && process.env.NODE_ENV === 'production') {
@@ -23,7 +25,6 @@ let connection = mysql.createConnection({
   user: process.env.DB_USER,
   password: process.env.DB_PASS,
   database: process.env.DB_DATABASE,
-  // socketPath: `${dbSocketPath}/document-validator:southamerica-east1:document-validator`,
 });
 
 connection.connect(function (err) {
@@ -34,4 +35,15 @@ connection.connect(function (err) {
   console.log("Connected as thread id: " + connection.threadId);
 });
 
-module.exports = connection;
+function makeDb() {
+  return {
+    query(sql, args) {
+      return util.promisify(connection.query).call(connection, sql, args);
+    },
+    close() {
+      return util.promisify(connection.end).call(connection);
+    },
+  };
+}
+
+module.exports = makeDb;
