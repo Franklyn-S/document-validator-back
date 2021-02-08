@@ -1,0 +1,118 @@
+swagger: "2.0"
+info:
+  title: Users and documents API
+  description: This API is used in document-validation APP
+  version: 1.0.0
+host: api.document-validator.com
+basePath: /v1
+schemes:
+  - https
+paths:
+  /users:
+    get:
+      summary: Returns a list of users.
+      operationId: getUsers
+      produces:
+        - application/json
+      responses:
+        200:
+          description: OK
+        500:
+          description: Error getting users
+    post:
+      summary: Creates a new user.
+      operationId: postUser
+      parameters:
+        - in: body
+          name: user
+      responses:
+        200:
+          description: OK
+        500:
+          description: Error creating user
+  /users/{id}:
+    get:
+      summary: Return a user based on ID.
+      operationId: getUserById
+      parameters:
+        - in: path
+          name: id
+          required: true
+          type: integer
+      produces:
+        - application/json
+      responses:
+        200:
+          description: OK
+        500:
+          description: Error getting user
+    put:
+      summary: Edit a user
+      operationId: editUser
+      parameters:
+        - in: body
+          name: user
+        - in: path
+          name: id
+          required: true
+          type: integer
+      responses:
+        200:
+          description: User edited successfully
+        500:
+          description: Error editing user
+    delete:
+      summary: delete a user
+      operationId: deleteUser
+      parameters:
+        - in: path
+          name: id
+          required: true
+          type: integer
+      responses:
+        200:
+          description: User deleted successfully
+        500:
+          description: Error deleting user
+  /documents:
+    post:
+      summary: Creates a new document.
+      operationId: postDocument
+      parameters:
+        - in: body
+          name: document
+      responses:
+        200:
+          description: OK
+        500:
+          description: Error creating document
+  /documents/{id}:
+    delete:
+      summary: delete a document
+      operationId: deleteDocument
+      parameters:
+        - in: path
+          name: id
+          required: true
+          type: integer
+      responses:
+        200:
+          description: Document deleted successfully
+        500:
+          description: Error deleting document
+  /documents/{userId}:
+    get:
+      summary: Return the list of documents linked to the userId passed.
+      operationId: getDocumentsByUserId
+      parameters:
+        - in: path
+          name: userId
+          required: true
+          type: integer
+      produces:
+        - application/json
+      responses:
+        200:
+          description: OK
+        500:
+          description: Error getting user

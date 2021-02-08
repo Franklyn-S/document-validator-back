@@ -1,7 +1,5 @@
 const makeDb = require("../database");
 const { Storage } = require("@google-cloud/storage");
-const stream = require("stream");
-const convertb64StringToBlob = require("../utils");
 
 const db = makeDb();
 const storage = new Storage({
@@ -14,30 +12,50 @@ const documentController = {
   async insert(req, res) {
     const { userId, name, base64 } = req.body;
     const blob = Buffer.from(base64, "base64");
-    //const blob = convertb64StringToBlob(base64, "application/pdf");
     const file = bucket.file(`${userId}/${name}`);
 
     try {
       await file.save(blob);
-      const url = await file.getSignedUrl({
+      const [url] = await file.getSignedUrl({
         action: "read",
         expires: "03-17-2025",
       });
 
-      await db.query("INSERT INTO document SET ?", {
-        userId,
-        name,
-        url,
+      const documents = await db.query(
+        "SELECT url FROM document WHERE userId = ?",
+        userId
+      );
+      let existUrl = false;
+      documents.forEach(document => {
+        if (url === document.url) {
+          existUrl = true;
+        }
       });
+      if (!existUrl) {
+        await db.query("INSERT INTO document SET ?", {
+          userId,
+          name,
+          url,
+        });
+      }
       res.send("Documento inserido com sucesso!");
     } catch (err) {
       console.log(err);
+      file.delete();
       res.status(500).send("Erro ao inserir documento.");
     }
   },
   async deleteById(req, res) {
     const id = req.params.id;
     try {
+      const [{ userId, name }] = await db.query(
+        "SELECT userId, name FROM document WHERE documentId = ?",
+        id
+      );
+      await storage
+        .bucket("document-validator")
+        .file(`${userId}/${name}`)
+        .delete();
       await db.query("DELETE FROM document WHERE documentId = ?", id);
       res.send("Documento deletado com sucesso!");
     } catch (err) {

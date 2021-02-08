@@ -1,6 +1,11 @@
 const makeDb = require("../database");
+const { Storage } = require("@google-cloud/storage");
 
 const db = makeDb();
+const storage = new Storage({
+  projectId: "document-validator",
+  keyFilename: "document-validator-1e8cf051a5e8.json",
+});
 
 const userController = {
   async all(_, res) {
@@ -68,6 +73,18 @@ const userController = {
   async deleteById(req, res) {
     const id = req.params.id;
     try {
+      const documents = await db.query(
+        "SELECT userId, name FROM document WHERE userId = ?",
+        id
+      );
+      console.log(documents);
+      documents.forEach(({ name }) => {
+        let file = storage.bucket("document-validator").file(`${id}/${name}`);
+        console.log(file);
+        if (file) {
+          file.delete();
+        }
+      });
       await db.query("DELETE FROM user WHERE userId = ?", id);
       res.send("Usuário deletado com sucesso!");
     } catch (err) {
