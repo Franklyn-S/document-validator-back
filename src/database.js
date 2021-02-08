@@ -19,7 +19,6 @@ const mysql = require("mysql");
 // Database Connection for Development
 // const dbSocketPath = process.env.DB_SOCKET_PATH || "/cloudsql";
 
-console.log(process.env.DB_HOST);
 let connection = mysql.createConnection({
   host: process.env.DB_HOST,
   user: process.env.DB_USER,

@@ -44,8 +44,7 @@ const userController = {
     }
   },
   async insert(req, res) {
-    const { fullName, username, password, email } = req.body;
-    const { phones } = req.body;
+    const { fullName, username, password, email, phones } = req.body;
     try {
       const userResult = await db.query("INSERT INTO user SET ?", {
         fullName,
