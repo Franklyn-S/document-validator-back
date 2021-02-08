@@ -3,7 +3,7 @@ info:
   title: Users and documents API
   description: This API is used in document-validation APP
   version: 1.0.0
-host: api.document-validator.com
+host: document-validator.appspot.com
 basePath: /v1
 schemes:
   - https
