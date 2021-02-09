@@ -2,7 +2,7 @@ swagger: "2.0"
 info:
   title: Users and documents API
   description: This API is used in document-validation APP
-  version: 1.0.0
+  version: 1.1.0
 host: document-validator.appspot.com
 basePath: /v1
 schemes:
@@ -25,6 +25,8 @@ paths:
       parameters:
         - in: body
           name: user
+          schema:
+            $ref: "#/definitions/User"
       responses:
         200:
           description: OK
@@ -52,6 +54,8 @@ paths:
       parameters:
         - in: body
           name: user
+          schema:
+            $ref: "#/definitions/User"
         - in: path
           name: id
           required: true
@@ -81,6 +85,8 @@ paths:
       parameters:
         - in: body
           name: document
+          schema:
+            $ref: "#/definitions/Document"
       responses:
         200:
           description: OK
@@ -100,13 +106,12 @@ paths:
           description: Document deleted successfully
         500:
           description: Error deleting document
-  /documents/{userId}:
     get:
       summary: Return the list of documents linked to the userId passed.
       operationId: getDocumentsByUserId
       parameters:
         - in: path
-          name: userId
+          name: id
           required: true
           type: integer
       produces:
@@ -116,3 +121,41 @@ paths:
           description: OK
         500:
           description: Error getting user
+
+definitions:
+  #Phone:
+  #  type: "object"
+  #  properties:
+  #    phoneId:
+  #      type: "integer"
+  #      format: "int64"
+  #    userId:
+  #      type: "integer"
+  #      format: "int64"
+  #    phonNumber:
+  #      type: "string"
+  User:
+    type: "object"
+    properties:
+      username:
+        type: "string"
+      fullName:
+        type: "string"
+      email:
+        type: "string"
+      password:
+        type: "string"
+      phones:
+        type: "array"
+        items:
+          type: "string"
+  Document:
+    type: "object"
+    properties:
+      userId:
+        type: "integer"
+        format: "int64"
+      name:
+        type: "string"
+      url:
+        type: "string"
