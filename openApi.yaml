@@ -1,3 +1,4 @@
+x-google-allow: all
 swagger: "2.0"
 info:
   title: Users and documents API
@@ -8,6 +9,19 @@ basePath: /v1
 schemes:
   - https
 paths:
+  /status:
+    get:
+      summary: Return the status
+      operationId: status
+      produces:
+        - string
+      responses:
+        200:
+          description: OK
+        500:
+          description: Error in Status
+      security:
+        - api_key: []
   /users:
     get:
       summary: Returns a list of users.
@@ -19,6 +33,8 @@ paths:
           description: OK
         500:
           description: Error getting users
+      security:
+        - api_key: []
     post:
       summary: Creates a new user.
       operationId: postUser
@@ -32,6 +48,8 @@ paths:
           description: OK
         500:
           description: Error creating user
+      security:
+        - api_key: []
   /users/{id}:
     get:
       summary: Return a user based on ID.
@@ -48,6 +66,8 @@ paths:
           description: OK
         500:
           description: Error getting user
+      security:
+        - api_key: []
     put:
       summary: Edit a user
       operationId: editUser
@@ -65,6 +85,8 @@ paths:
           description: User edited successfully
         500:
           description: Error editing user
+      security:
+        - api_key: []
     delete:
       summary: delete a user
       operationId: deleteUser
@@ -78,6 +100,26 @@ paths:
           description: User deleted successfully
         500:
           description: Error deleting user
+      security:
+        - api_key: []
+  /users/username/{username}:
+    get:
+      summary: Return a user based on username.
+      operationId: getUserByUsername
+      parameters:
+        - in: path
+          name: username
+          required: true
+          type: string
+      produces:
+        - application/json
+      responses:
+        200:
+          description: OK
+        500:
+          description: Error getting user
+      security:
+        - api_key: []
   /documents:
     post:
       summary: Creates a new document.
@@ -92,6 +134,8 @@ paths:
           description: OK
         500:
           description: Error creating document
+      security:
+        - api_key: []
   /documents/{id}:
     delete:
       summary: delete a document
@@ -106,6 +150,8 @@ paths:
           description: Document deleted successfully
         500:
           description: Error deleting document
+      security:
+        - api_key: []
     get:
       summary: Return the list of documents linked to the userId passed.
       operationId: getDocumentsByUserId
@@ -121,6 +167,8 @@ paths:
           description: OK
         500:
           description: Error getting user
+      security:
+        - api_key: []
 
 definitions:
   #Phone:
@@ -159,3 +207,12 @@ definitions:
         type: "string"
       url:
         type: "string"
+
+# [START securityDef]
+securityDefinitions:
+  # This section configures basic authentication with an API key.
+  api_key:
+    type: "apiKey"
+    name: "x-api-key"
+    in: "header"
+# [END securityDef]

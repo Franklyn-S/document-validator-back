@@ -48,6 +48,22 @@ const userController = {
       res.status("500").send("Erro ao buscar usuário.");
     }
   },
+  async getUserByUsername(req, res) {
+    const username = req.params.username;
+    try {
+      const [user] = await db.query(
+        "SELECT * FROM user WHERE username = ?",
+        username
+      );
+      const phones = await db.query(
+        "SELECT phoneId, phoneNumber FROM phone WHERE userId = ?",
+        user.userId
+      );
+      res.json({ ...user, phones });
+    } catch (err) {
+      res.status("500").send("Erro ao buscar usuário.");
+    }
+  },
   async insert(req, res) {
     const { fullName, username, password, email, phones } = req.body;
     try {

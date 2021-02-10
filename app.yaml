@@ -15,6 +15,12 @@ runtime: nodejs
 env: flex
 
 # [START configuration]
+handlers:
+  - url: /*
+    secure: always
+    redirect_http_response_code: 301
+    script: auto
+
 endpoints_api_service:
   # The following values are to be replaced by information from the output of
   # 'gcloud endpoints services deploy openapi-appengine.yaml' command.

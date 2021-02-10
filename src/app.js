@@ -12,10 +12,9 @@ app.use(
     extended: true,
   })
 );
-app.use("/users", userRoutes);
-app.use("/documents", documentRoutes);
-
-app.get("/status", (req, res) => res.send("Working!"));
+app.use("/v1/users", userRoutes);
+app.use("/v1/documents", documentRoutes);
+app.get("/v1/status", (req, res) => res.send("Working!"));
 
 // Port 8080 for Google App Engine
 app.set("port", process.env.APP_PORT || 8080);
