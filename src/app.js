@@ -12,6 +12,17 @@ app.use(
     extended: true,
   })
 );
+
+app.use(function (req, res, next) {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header(
+    "Access-Control-Allow-Headers",
+    "Origin, X-Requested-With, Content-Type, Accept"
+  );
+  res.header("Access-Control-Allow-Methods", "GET, POST, OPTIONS, PUT, DELETE");
+  next();
+});
+
 app.use("/v1/users", userRoutes);
 app.use("/v1/documents", documentRoutes);
 app.get("/v1/status", (req, res) => res.send("Working!"));

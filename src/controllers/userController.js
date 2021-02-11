@@ -39,11 +39,15 @@ const userController = {
         "SELECT * FROM user WHERE userId = ?",
         idParam
       );
-      const phones = await db.query(
-        "SELECT phoneId, phoneNumber FROM phone WHERE userId = ?",
-        idParam
-      );
-      res.json({ ...user, phones });
+      if (user) {
+        const phones = await db.query(
+          "SELECT phoneId, phoneNumber FROM phone WHERE userId = ?",
+          idParam
+        );
+        res.json({ ...user, phones });
+      } else {
+        res.json(null);
+      }
     } catch (err) {
       res.status("500").send("Erro ao buscar usuário.");
     }
@@ -51,15 +55,15 @@ const userController = {
   async getUserByUsername(req, res) {
     const username = req.params.username;
     try {
-      const [user] = await db.query(
+      const [password] = await db.query(
         "SELECT * FROM user WHERE username = ?",
         username
       );
-      const phones = await db.query(
-        "SELECT phoneId, phoneNumber FROM phone WHERE userId = ?",
-        user.userId
-      );
-      res.json({ ...user, phones });
+      if (password) {
+        res.json(password);
+      } else {
+        res.json(null);
+      }
     } catch (err) {
       res.status("500").send("Erro ao buscar usuário.");
     }
@@ -115,14 +119,16 @@ const userController = {
         { fullName, username, password, email },
         userId,
       ]);
-      phones.forEach(async ({ phoneId, phoneNumber }) => {
-        await db.query("UPDATE phone SET phoneNumber = ? WHERE phoneId = ?", [
-          phoneNumber,
-          phoneId,
-        ]);
+      await db.query("DELETE FROM phone WHERE userId = ?", userId);
+      phones.forEach(async phone => {
+        await db.query("INSERT INTO phone SET ?", {
+          userId,
+          phoneNumber: phone,
+        });
       });
       res.send("Usuário editado com sucesso!");
     } catch (err) {
+      console.log(err);
       res.status("500").send("Erro ao atualizar o usuário.");
     }
   },

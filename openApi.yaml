@@ -5,6 +5,9 @@ info:
   description: This API is used in document-validation APP
   version: 1.1.0
 host: document-validator.appspot.com
+x-google-endpoints:
+  - name: document-validator.appspot.com
+    allowCors: True
 basePath: /v1
 schemes:
   - https
