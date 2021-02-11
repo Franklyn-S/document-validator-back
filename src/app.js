@@ -5,6 +5,7 @@ const app = express();
 const bodyParser = require("body-parser");
 const userRoutes = require("./routes/userRoutes");
 const documentRoutes = require("./routes/documentsRoutes");
+const validationRoutes = require("./routes/validationsRoutes");
 
 app.use(
   bodyParser.json({
@@ -14,6 +15,7 @@ app.use(
 );
 app.use("/users", userRoutes);
 app.use("/documents", documentRoutes);
+app.use("/validations", validationRoutes);
 
 app.get("/status", (req, res) => res.send("Working!"));
 
