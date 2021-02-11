@@ -1,5 +1,11 @@
 const makeDb = require("../database");
 const { Storage } = require("@google-cloud/storage");
+const request = require('request');
+const validationController = require('./validationController');
+
+function isEmptyObject(obj) {
+  return !Object.keys(obj).length;
+}
 
 const db = makeDb();
 const storage = new Storage({
@@ -48,17 +54,28 @@ const documentController = {
   async deleteById(req, res) {
     const id = req.params.id;
     try {
-      const [{ userId, name }] = await db.query(
+      const documents = await db.query(
         "SELECT userId, name FROM document WHERE documentId = ?",
         id
       );
-      await storage
-        .bucket("document-validator")
-        .file(`${userId}/${name}`)
-        .delete();
-      await db.query("DELETE FROM document WHERE documentId = ?", id);
+
+      if(isEmptyObject(documents)) {
+        res.status(400).send("Arquivo não existe");
+      }
+      else {
+        const [{ userId, name }] = documents;
+        await storage
+          .bucket("document-validator")
+          .file(`${userId}/${name}`)
+          .delete();
+        await db.query("DELETE FROM document WHERE documentId = ?", id);
+      }
+
+      request.delete(process.env.URL + id, null);
+
       res.send("Documento deletado com sucesso!");
     } catch (err) {
+      console.log(err);
       res.status(500).send("Erro ao deletar documento");
     }
   },

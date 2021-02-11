@@ -5,6 +5,7 @@ const app = express();
 const bodyParser = require("body-parser");
 const userRoutes = require("./routes/userRoutes");
 const documentRoutes = require("./routes/documentsRoutes");
+const validationRoutes = require("./routes/validationsRoutes");
 
 app.use(
   bodyParser.json({
@@ -25,6 +26,7 @@ app.use(function (req, res, next) {
 
 app.use("/v1/users", userRoutes);
 app.use("/v1/documents", documentRoutes);
+app.use("/v1/validations", validationRoutes);
 app.get("/v1/status", (req, res) => res.send("Working!"));
 
 // Port 8080 for Google App Engine

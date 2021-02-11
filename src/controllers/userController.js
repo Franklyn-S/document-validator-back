@@ -1,5 +1,10 @@
 const makeDb = require("../database");
 const { Storage } = require("@google-cloud/storage");
+const request = require('request');
+
+function isEmptyObject(obj) {
+  return !Object.keys(obj).length;
+}
 
 const db = makeDb();
 const storage = new Storage({
@@ -94,20 +99,20 @@ const userController = {
     const id = req.params.id;
     try {
       const documents = await db.query(
-        "SELECT userId, name FROM document WHERE userId = ?",
+        "SELECT documentId, name FROM document WHERE userId = ?",
         id
       );
-      console.log(documents);
-      documents.forEach(({ name }) => {
-        let file = storage.bucket("document-validator").file(`${id}/${name}`);
-        console.log(file);
-        if (file) {
-          file.delete();
-        }
+      if(isEmptyObject(documents)) {
+        res.status(400).send("Não existem arquivos para esse usuário");
+      }
+      await documents.forEach(({ documentId }) => {
+        request.delete('http://localhost:8080/documents/' + documentId, null);
+        request.delete('http://localhost:8080/validations/' + documentId, null);
       });
       await db.query("DELETE FROM user WHERE userId = ?", id);
       res.send("Usuário deletado com sucesso!");
     } catch (err) {
+      console.log(err);
       res.status(500).send("Erro ao deletar usuário");
     }
   },
