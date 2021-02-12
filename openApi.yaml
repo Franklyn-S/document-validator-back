@@ -173,6 +173,56 @@ paths:
       security:
         - api_key: []
 
+  /validations:
+    post:
+      summary: Creates a new validation.
+      operationId: postValidation
+      parameters:
+        - in: body
+          name: validation
+          schema:
+            $ref: "#/definitions/Validation"
+      responses:
+        200:
+          description: OK
+        500:
+          description: Error creating validation
+      security:
+        - api_key: []
+  /validations/{id}:
+    get:
+      summary: Return the list of validation linked to the fileId passed.
+      operationId: getValidationByFileId
+      parameters:
+        - in: path
+          name: id
+          required: true
+          type: integer
+      produces:
+        - application/json
+      responses:
+        200:
+          description: OK
+        500:
+          description: Error getting validation
+      security:
+        - api_key: []
+    delete:
+      summary: delete a validation
+      operationId: deleteValidation
+      parameters:
+        - in: path
+          name: id
+          required: true
+          type: integer
+      responses:
+        200:
+          description: Validaiton deleted successfully
+        500:
+          description: Error deleting validation
+      security:
+        - api_key: []
+
 definitions:
   #Phone:
   #  type: "object"
@@ -209,6 +259,16 @@ definitions:
       name:
         type: "string"
       url:
+        type: "string"
+  Validation:
+    type: "object"
+    properties:
+      fileId:
+        type: "integer"
+        format: "int64"
+      base64:
+        type: "string"
+      motivation:
         type: "string"
 
 # [START securityDef]

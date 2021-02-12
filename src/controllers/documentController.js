@@ -1,7 +1,6 @@
 const makeDb = require("../database");
 const { Storage } = require("@google-cloud/storage");
-const request = require('request');
-const validationController = require('./validationController');
+const request = require("request");
 
 function isEmptyObject(obj) {
   return !Object.keys(obj).length;
@@ -59,10 +58,9 @@ const documentController = {
         id
       );
 
-      if(isEmptyObject(documents)) {
+      if (isEmptyObject(documents)) {
         res.status(400).send("Arquivo não existe");
-      }
-      else {
+      } else {
         const [{ userId, name }] = documents;
         await storage
           .bucket("document-validator")
@@ -71,7 +69,7 @@ const documentController = {
         await db.query("DELETE FROM document WHERE documentId = ?", id);
       }
 
-      request.delete(process.env.URL + id, null);
+      request.delete(process.env.URL + "/documents/" + id, null);
 
       res.send("Documento deletado com sucesso!");
     } catch (err) {

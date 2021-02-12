@@ -1,6 +1,6 @@
 const makeDb = require("../database");
 const { Storage } = require("@google-cloud/storage");
-const request = require('request');
+const request = require("request");
 
 function isEmptyObject(obj) {
   return !Object.keys(obj).length;
@@ -102,12 +102,12 @@ const userController = {
         "SELECT documentId, name FROM document WHERE userId = ?",
         id
       );
-      if(isEmptyObject(documents)) {
+      if (isEmptyObject(documents)) {
         res.status(400).send("Não existem arquivos para esse usuário");
       }
       await documents.forEach(({ documentId }) => {
-        request.delete('http://localhost:8080/documents/' + documentId, null);
-        request.delete('http://localhost:8080/validations/' + documentId, null);
+        request.delete(process.env.URL + "/documents/" + documentId, null);
+        request.delete(process.env.URL + "/validations/" + documentId, null);
       });
       await db.query("DELETE FROM user WHERE userId = ?", id);
       res.send("Usuário deletado com sucesso!");
