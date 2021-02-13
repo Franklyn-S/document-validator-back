@@ -102,13 +102,12 @@ const userController = {
         "SELECT documentId, name FROM document WHERE userId = ?",
         id
       );
-      if (isEmptyObject(documents)) {
-        res.status(400).send("Não existem arquivos para esse usuário");
+      if (!isEmptyObject(documents)) {
+        await documents.forEach(({ documentId }) => {
+          request.delete(process.env.URL + "/documents/" + documentId, null);
+          request.delete(process.env.URL + "/validations/" + documentId, null);
+        });
       }
-      await documents.forEach(({ documentId }) => {
-        request.delete(process.env.URL + "/documents/" + documentId, null);
-        request.delete(process.env.URL + "/validations/" + documentId, null);
-      });
       await db.query("DELETE FROM user WHERE userId = ?", id);
       res.send("Usuário deletado com sucesso!");
     } catch (err) {

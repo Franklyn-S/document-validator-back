@@ -69,7 +69,7 @@ const documentController = {
         await db.query("DELETE FROM document WHERE documentId = ?", id);
       }
 
-      request.delete(process.env.URL + "/documents/" + id, null);
+      request.delete(process.env.URL + "/validations/" + id, null);
 
       res.send("Documento deletado com sucesso!");
     } catch (err) {
