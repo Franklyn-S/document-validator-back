@@ -12,6 +12,7 @@
 # limitations under the License.
 
 runtime: nodejs
+service: api
 env: flex
 
 # [START configuration]
@@ -27,3 +28,6 @@ endpoints_api_service:
   name: document-validator.appspot.com
   rollout_strategy: managed
 # [END configuration]
+
+readiness_check:
+  app_start_timeout_sec: 100000
