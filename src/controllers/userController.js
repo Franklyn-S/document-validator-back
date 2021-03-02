@@ -92,6 +92,7 @@ const userController = {
       }
       res.send("Usuário inserido com sucesso!");
     } catch (err) {
+      console.log(err);
       res.status(500).send("Erro ao inserir usuário");
     }
   },
