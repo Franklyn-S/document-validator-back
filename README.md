@@ -1,5 +1,8 @@
 # document-validator-back
 
+## Docker compose
+```docker-compose up```
+
 ## get database image
 docker pull luancaarvalho/my-mysql
 
